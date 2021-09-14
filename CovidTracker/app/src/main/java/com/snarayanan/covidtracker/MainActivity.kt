@@ -11,14 +11,17 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private const val BASE_URL = "https://covidtracking.com/api/v1"
+private const val BASE_URL = "https://covidtracking.com/api/v1/"
 private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
+    private lateinit var perStateDailyData: Map<String, List<CovidData>> //Map between state and data
+    private lateinit var nationalDailyData: List<CovidData>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val gson = GsonBuilder().create()
+        val gson = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
@@ -40,8 +43,31 @@ class MainActivity : AppCompatActivity() {
                     Log.w(TAG, "did not receive a valid response body")
                     return
                 }
+                nationalDailyData = nationalData.reversed()
+                Log.i(TAG,"Update graph with national data")
+                // TODO: Update graph with national data
             }
         })
         //Fetch the state data
+        covidService.getStatesData().enqueue(object: Callback<List<CovidData>>{
+            override fun onFailure(call: Call<List<CovidData>>, t: Throwable) {
+                Log.e(TAG, "onFailure $t")
+            }
+
+            override fun onResponse(
+                call: Call<List<CovidData>>,
+                response: Response<List<CovidData>>
+            ) {
+                Log.i(TAG, "onResponse $response")
+                val statesData = response.body()
+                if (statesData == null){
+                    Log.w(TAG, "did not receive a valid response body")
+                    return
+                }
+                perStateDailyData = statesData.reversed().groupBy { it.state }
+                Log.i(TAG,"Update spinner with state names")
+                // TODO: Update spinner with state names
+            }
+        })
     }
 }
