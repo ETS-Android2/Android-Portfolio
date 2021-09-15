@@ -1,4 +1,4 @@
-package com.snarayanan.covidtracker
+package com.snarayanan.todolist
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
