@@ -106,13 +106,13 @@ class MainActivity : AppCompatActivity() {
             when (checkedId) {
                 R.id.radioButtonPositive -> updateDisplayMetric(Metric.POSITIVE)
                 R.id.radioNegative -> updateDisplayMetric(Metric.NEGATIVE)
-                R.id.radioButtonMax -> updateDisplayMetric(Metric.DEATH)
+                R.id.radioButtonDeath -> updateDisplayMetric(Metric.DEATH)
             }
         }
     }
 
     private fun updateDisplayMetric(metric: Metric) {
-        adapter.metric
+        adapter.metric = metric
         adapter.notifyDataSetChanged()
     }
 
@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
         adapter = CovidSparkAdapter(dailyData)
         // Update radio buttons to select the positive vases and max time by default
         binding.sparkView.adapter = adapter
-        binding.radioNegative.isChecked = true
+        binding.radioButtonPositive.isChecked = true
         binding.radioButtonMax.isChecked = true
         // Display metric for the most recent date
         updateInfoForDate(dailyData.last())
@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
             Metric.POSITIVE -> covidData.positiveIncrease
             Metric.DEATH -> covidData.deathIncrease
         }
-        binding.tvMetricLabel.text = NumberFormat.getInstance().format(covidData.positiveIncrease)
+        binding.tvMetricLabel.text = NumberFormat.getInstance().format(numCases)
         val outputDateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
         binding.tvDateLabel.text = outputDateFormat.format(covidData.dateChecked)
     }

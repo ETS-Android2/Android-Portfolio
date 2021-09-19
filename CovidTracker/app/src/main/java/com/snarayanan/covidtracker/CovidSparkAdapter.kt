@@ -5,7 +5,7 @@ import com.robinhood.spark.SparkAdapter
 
 class CovidSparkAdapter(private val dailyData: List<CovidData>) : SparkAdapter() {
 
-    var metric = Metric.POSITIVE
+    var metric = Metric.NEGATIVE
     var daysAgo = TimeScale.MAX
 
     override fun getCount() = dailyData.size
