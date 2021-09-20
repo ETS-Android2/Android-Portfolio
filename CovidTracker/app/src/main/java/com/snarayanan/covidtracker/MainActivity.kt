@@ -1,10 +1,14 @@
 package com.snarayanan.covidtracker
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import com.google.gson.GsonBuilder
+import com.snarayanan.covidtracker.R.color
 import com.snarayanan.covidtracker.databinding.ActivityMainBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,8 +21,11 @@ import java.util.*
 
 private const val BASE_URL = "https://covidtracking.com/api/v1/"
 private const val TAG = "MainActivity"
+private const val ALL_STATES = "All (Nationwide)"
 class MainActivity : AppCompatActivity() {
 
+
+    private lateinit var currentlyShownData: List<CovidData>
     private lateinit var adapter: CovidSparkAdapter
     private lateinit var binding: ActivityMainBinding
     private lateinit var perStateDailyData: Map<String, List<CovidData>>
@@ -75,6 +82,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 perStateDailyData = statesData.reversed().groupBy { it.state }
                 Log.i(TAG, "Update spinner with states names")
+
+                updateSpinnerWithStateData(perStateDailyData.keys)
             }
 
             override fun onFailure(call: Call<List<CovidData>>, t: Throwable) {
@@ -82,6 +91,19 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    private fun updateSpinnerWithStateData(stateNames: Set<String>) {
+        val stateAbbreviationList = stateNames.toMutableList()
+        stateAbbreviationList.sort()
+        stateAbbreviationList.add(0, ALL_STATES)
+
+        //Add state list as a data source
+        binding.spinnerSelect.attachDataSource(stateAbbreviationList)
+        binding.spinnerSelect.setOnSpinnerItemSelectedListener {
+                parent, _, position, _-> val selectedState = parent.getItemAtPosition(position) as String
+            val selectedData = perStateDailyData[selectedState] ?: nationalDailyData
+        updateDisplayWithData(selectedData)}
     }
 
     private fun setupEventListeners() {
@@ -112,11 +134,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateDisplayMetric(metric: Metric) {
+        // Update the color of the chart
+        val colorRes = when (metric){
+            Metric.NEGATIVE -> color.colorNegative
+            Metric.POSITIVE -> color.colorPositive
+            Metric.DEATH -> color.colorDeath
+        }
+        @ColorInt val colorInt = ContextCompat.getColor(this, colorRes)
+        binding.sparkView.lineColor = colorInt
+        // Update the metric on the adapter
         adapter.metric = metric
         adapter.notifyDataSetChanged()
+        
+        // Reset number and date shown in the bottom text views
+        updateInfoForDate(currentlyShownData.last())
     }
 
     private fun updateDisplayWithData(dailyData: List<CovidData>) {
+        currentlyShownData = dailyData
         // Create a spark adapter
         adapter = CovidSparkAdapter(dailyData)
         // Update radio buttons to select the positive vases and max time by default
@@ -124,7 +159,7 @@ class MainActivity : AppCompatActivity() {
         binding.radioButtonPositive.isChecked = true
         binding.radioButtonMax.isChecked = true
         // Display metric for the most recent date
-        updateInfoForDate(dailyData.last())
+        updateDisplayMetric(Metric.POSITIVE)
     }
 
     private fun updateInfoForDate(covidData: CovidData) {
