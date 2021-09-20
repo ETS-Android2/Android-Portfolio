@@ -12,11 +12,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="TextView"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="State" />
+        android:text="State" />
 
     <org.angmarch.views.NiceSpinner
         android:id="@+id/spinnerSelect"
@@ -46,18 +45,21 @@
 
         <RadioButton
             android:id="@+id/radioNegative"
+            style="@style/CustomRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Negative" />
 
         <RadioButton
             android:id="@+id/radioButtonPositive"
+            style="@style/CustomRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Positive" />
 
         <RadioButton
             android:id="@+id/radioButtonDeath"
+            style="@style/CustomRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Death" />
@@ -67,6 +69,10 @@
         android:id="@+id/sparkView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:background="@color/colorBackgroundShade"
         app:layout_constraintBottom_toTopOf="@+id/radioGroupTimeSelection"
         app:layout_constraintTop_toBottomOf="@id/radioGroupMetricSelection" />
 
@@ -74,26 +80,32 @@
         android:id="@+id/radioGroupTimeSelection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingBottom="8dp"
         android:gravity="center"
+        android:background="@color/colorBackgroundShade"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/tvMetricLabel"
+        app:layout_constraintBottom_toTopOf="@+id/tickerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <RadioButton
             android:id="@+id/radioButtonWeek"
+            style="@style/CustomRadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Week" />
 
         <RadioButton
             android:id="@+id/radioButtonMonth"
+            style="@style/CustomRadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Month" />
 
         <RadioButton
             android:id="@+id/radioButtonMax"
+            style="@style/CustomRadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Max" />
@@ -110,8 +122,8 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Sep 17, 2021" />
 
-    <TextView
-        android:id="@+id/tvMetricLabel"
+    <com.robinhood.ticker.TickerView
+        android:id="@+id/tickerView"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:gravity="center"
@@ -120,5 +132,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvDateLabel"
-        tools:text="5.789" />
+        tools:text="5,789" />
 </androidx.constraintlayout.widget.ConstraintLayout>

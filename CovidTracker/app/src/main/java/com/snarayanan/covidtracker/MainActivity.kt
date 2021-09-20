@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.google.gson.GsonBuilder
+import com.robinhood.ticker.TickerUtils
 import com.snarayanan.covidtracker.R.color
 import com.snarayanan.covidtracker.databinding.ActivityMainBinding
 import retrofit2.Call
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
+        supportActionBar?.title = getString(R.string.app_description)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -107,6 +108,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupEventListeners() {
+        binding.tickerView.setCharacterLists(TickerUtils.provideNumberList())
         // Add a listener for user scrubbing on the chart
         binding.sparkView.isScrubEnabled = true
         binding.sparkView.setScrubListener {
@@ -168,7 +170,7 @@ class MainActivity : AppCompatActivity() {
             Metric.POSITIVE -> covidData.positiveIncrease
             Metric.DEATH -> covidData.deathIncrease
         }
-        binding.tvMetricLabel.text = NumberFormat.getInstance().format(numCases)
+        binding.tickerView.text = NumberFormat.getInstance().format(numCases)
         val outputDateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
         binding.tvDateLabel.text = outputDateFormat.format(covidData.dateChecked)
     }
