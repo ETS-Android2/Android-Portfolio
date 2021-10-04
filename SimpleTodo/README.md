@@ -28,8 +28,6 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
-
 ## License
 
     Copyright 2021 Sriram Narayanan
